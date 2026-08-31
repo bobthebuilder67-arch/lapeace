@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>la peace</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="home">
+  <div class="navbar">
+    <a class="brand" href="index.html">la peace</a>
+    <div class="tabs">
+      <button class="tab active" id="tab-all" onclick="setTab('all')">ALL <span class="n" id="n-all"></span></button>
+      <button class="tab" id="tab-pc" onclick="setTab('pc')">PC GAMES <span class="n" id="n-pc"></span></button>
+      <button class="tab" id="tab-retro" onclick="setTab('retro')">RETRO &amp; MORE <span class="n" id="n-retro"></span></button>
+    </div>
+  </div>
+
+  <div class="hero" style="background-image:url('https://lh3.googleusercontent.com/sitesv/AG8ngQULNZ-5CO-RkNNo79W6jTmkmJpqAMlRyIAJk9B-4RK0j9mcHyj6O3r2-7rIBTAPoh9TFkBnq3tkxOENBqp-qWTm_X_9thwCgm31Wi57ai9ByHlD4YxcDM2SnzAYmv3mmy7-ePmfexhLQ5qt46V7Xnnv7iVg1uXBu-RTbNuHZnvcTE3cu8EfhI7O7XVKpac=w1920');">
+    <h1>la peace</h1>
+    <p>Your game hub</p>
+  </div>
+
+  <div class="controls">
+    <input class="search" type="text" id="search" placeholder="Search games..." oninput="onSearch(this.value)">
+    <p class="count" id="count"></p>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="section-label" id="sec-label">ALL GAMES</div>
+    <div class="grid" id="grid-all"></div>
+    <div class="grid" id="grid-pc" data-tab="pc" hidden></div>
+    <div class="grid" id="grid-retro" hidden></div>
+    <div class="empty" id="empty" hidden>No games match your search.</div>
+  </div>
+</div>
+
+<script>
+var PC_GAMES = [
+  {n:"Bendy and the Ink Machine", img:"https://wasm.rip/img/batim.png", url:"games/pc/bendy-and-the-ink-machine.html", sub:"crackers & slqnt"},
+  {n:"MiSide", img:"https://wasm.rip/img/miside.jpg", url:"games/pc/miside.html", sub:"crackers"},
+  {n:"Baldi's Basics Birthday Bash", img:"https://wasm.rip/img/bdaybash.png", url:"games/pc/baldi-s-basics-birthday-bash.html", sub:"crackers"},
+  {n:"Boil Noodles at Night", img:"https://wasm.rip/img/noodle.png", url:"games/pc/boil-noodles-at-night.html", sub:"sexyplankton"},
+  {n:"Cuphead", img:"https://wasm.rip/img/cuphead.png", url:"games/pc/cuphead.html", sub:"crackers"},
+  {n:"Cheese Rolling", img:"https://wasm.rip/img/cheeserolling.png", url:"games/pc/cheese-rolling.html", sub:"sexyplankton"},
+  {n:"Brotato Paws n' Claws", img:"https://wasm.rip/img/bpac.png", url:"games/pc/brotato-paws-n-claws.html", sub:"dude"},
+  {n:"One Shot: World Machine Edition", img:"https://wasm.rip/img/oneshot.jpg", url:"games/pc/one-shot-world-machine-edition.html", sub:"shayder"},
+  {n:"Helltaker", img:"https://wasm.rip/img/helltaker.png", url:"games/pc/helltaker.html", sub:"shxyder"},
+  {n:"Stardew Valley", img:"https://wasm.rip/img/star.jpg", url:"games/pc/stardew-valley.html", sub:"cirsius"},
+  {n:"Dice A Million", img:"https://wasm.rip/img/diceamillion.png", url:"games/pc/dice-a-million.html", sub:"NotRexed"},
+  {n:"The Man From The Window 2", img:"https://wasm.rip/img/The_Man_from_the_Window_2_29.webp", url:"games/pc/the-man-from-the-window-2.html", sub:"dude"},
+  {n:"Fez", img:"https://wasm.rip/img/FEZ.png", url:"games/pc/fez.html", sub:"gurtmuncher"},
+  {n:"Beatblock", img:"https://wasm.rip/img/beatblock.jpg", url:"games/pc/beatblock.html", sub:"sunsuke"},
+  {n:"Azahar", img:"https://wasm.rip/img/aza.png", url:"games/pc/azahar.html", sub:"sexyplankton"},
+  {n:"Ravenfield", img:"https://wasm.rip/img/ravenfield.png", url:"games/pc/ravenfield.html", sub:"gurtmuncher"},
+  {n:"Happy Room", img:"https://wasm.rip/img/happy-room.png", url:"games/pc/happy-room.html", sub:"gurtmuncher"},
+  {n:"Inscryption", img:"https://wasm.rip/img/insc.png", url:"games/pc/inscryption.html", sub:"reeyuki"},
+  {n:"Lobotomy Corporation", img:"https://wasm.rip/img/lob-corp.png", url:"games/pc/lobotomy-corporation.html", sub:"reeyuki"},
+  {n:"Ages of Conflict", img:"https://wasm.rip/img/aoc.png", url:"games/pc/ages-of-conflict.html", sub:"sexyplankton"},
+  {n:"While True: Learn()", img:"https://wasm.rip/img/wtl.png", url:"games/pc/while-true-learn.html", sub:"dasher"},
+  {n:"Plague Inc", img:"https://wasm.rip/img/plauge.png", url:"games/pc/plauge-inc.html", sub:"reeyuki"},
+  {n:"Trombone Champ", img:"https://wasm.rip/img/tchamp/img.png", url:"games/pc/trombone-champ.html", sub:"gurtmuncher"},
+  {n:"Granny 3", img:"https://wasm.rip/img/granny3.png", url:"games/pc/granny-3.html", sub:"crax"},
+  {n:"PEAK", img:"https://wasm.rip/img/peak.png", url:"games/pc/peak.html", sub:"dasher"},
+  {n:"Among Us", img:"https://wasm.rip/img/amongus.webp", url:"games/pc/among-us.html", sub:"wasm.rip"},
+  {n:"GTA 3", img:"https://wasm.rip/img/gta3.png", url:"games/pc/gta-3.html", sub:"shxyder"},
+  {n:"SCP: Containment Breach", img:"https://wasm.rip/img/scp.png", url:"games/pc/scp-containment-breach.html", sub:"q8j"},
+  {n:"ClusterTruck", img:"https://wasm.rip/img/ClusterTruck.png", url:"games/pc/clustertruck.html", sub:"NotRexed"},
+  {n:"HowToFish", img:"https://wasm.rip/img/fish.png", url:"games/pc/howtofish.html", sub:"NotRexed"}
+];
+
+var RETRO_GAMES = [
+  {t:"&#127918;", n:"Retro Consoles", u:"retro.html"},
+  {t:"&#9935;", n:"Minecraft", u:"games/minecraft.html"},
+  {t:"&#128421;", n:"PC DOS Games", u:"games/pc-dos-games.html"},
+  {t:"&#128187;", n:"MS-DOS Collection", u:"games/ms-dos-collection.html"},
+  {t:"&#128250;", n:"Console Living Room", u:"games/console-living-room.html"},
+  {t:"&#128126;", n:"RetroGames.cc", u:"games/retrogames-portal.html"},
+  {t:"&#9917;", n:"1v1 Soccer", u:"games/1v1-soccer.html"},
+  {t:"&#127760;", n:"99 Night", u:"games/99-night.html"},
+  {t:"&#128118;", n:"Bad Parenting", u:"games/bad-parenting.html"},
+  {t:"&#128451;", n:"Block Blast", u:"games/block-blast.html"},
+  {t:"&#9876;&#65039;", n:"Clash of Viking", u:"games/clash-of-viking.html"},
+  {t:"&#127918;", n:"Cloud Gaming", u:"games/cloudgaming.html"},
+  {t:"&#128004;", n:"Crazy Cattle 3D", u:"games/crazy-cattle-3d.html"},
+  {t:"&#128125;", n:"Granny 3", u:"games/granny-3.html"},
+  {t:"&#127807;", n:"Grow a Garden", u:"games/grow-a-garden.html"},
+  {t:"&#127754;", n:"GTA Vice City", u:"games/gta-vice-city.html"},
+  {t:"&#128300;", n:"Gun Mayhem", u:"games/gun-mayham.html"},
+  {t:"&#128375;", n:"Hollow Knight", u:"games/hollow-kight.html"},
+  {t:"&#127968;", n:"Jelly Drift", u:"games/jelly-drift.html"},
+  {t:"&#127960;", n:"Konkr.io", u:"games/konkr-io.html"},
+  {t:"&#127934;", n:"Kour.io", u:"games/kour-io.html"},
+  {t:"&#128762;", n:"MX Offroad Master", u:"games/mx-offroad-master.html"},
+  {t:"&#128218;", n:"Emulator JS", u:"games/emulator-js.html"},
+  {t:"&#127922;", n:"Roulette Knight", u:"games/roulette-knight.html"},
+  {t:"&#128737;", n:"NZP", u:"games/nzp.html"},
+  {t:"&#129473;", n:"Papa's Bakeria", u:"games/papa-bakeria.html"},
+  {t:"&#129472;", n:"Papa's Cheeseria", u:"games/papa-cheeseria.html"},
+  {t:"&#127846;", n:"Papa's Freezeria", u:"games/papa-freezeria.html"},
+  {t:"&#128055;", n:"Pokemon Quetzal", u:"games/pokemon-quetzal.html"},
+  {t:"&#128053;", n:"Pokemon Radical Red", u:"games/pokemon-radical-red.html"},
+  {t:"&#127945;", n:"Retro Bowl", u:"games/retro-bowl.html"},
+  {t:"&#128663;", n:"Slow Road", u:"games/slow-road.html"},
+  {t:"&#128693;", n:"Subway Surfers", u:"games/subway-surfers.html"},
+  {t:"&#129420;", n:"Tanuki Sunset", u:"games/tanuki-sunset.html"},
+  {t:"&#127919;", n:"Ultra Kill", u:"games/ultra-kill.html"},
+  {t:"&#127183;", n:"UNO", u:"games/uno.html"},
+  {t:"&#128123;", n:"Undertale 10th Anniversary", u:"games/undertale-10th-anniversary.html"},
+  {t:"&#127925;", n:"FNF Agoti", u:"games/fnf-agoti.html"},
+  {t:"&#127925;", n:"FNF Self-Paced", u:"games/fnf-self-paced.html"},
+  {t:"&#127925;", n:"FNF Rev-Mixed", u:"games/fnf-revmixed.html"},
+  {t:"&#127925;", n:"FNF Mob Mod", u:"games/fnf-mob-mod.html"},
+  {t:"&#128125;", n:"Deltarune: A Different Snowgrave", u:"games/deltarune-a-different-snowgrave.html"}
+];
+
+var curTab = 'all', curQuery = '';
+
+function pcCard(g) {
+  return '<a class="card img-card" href="' + g.url + '"><img src="' + g.img + '" alt="' + g.n + '" loading="lazy"><div class="c-body"><span class="c-name">' + g.n + '</span><div class="c-sub">port by ' + g.sub + '</div></div></a>';
+}
+function retroCard(g) {
+  return '<a class="card" href="' + g.u + '"><span class="tile">' + g.t + '</span><span>' + g.n + '</span></a>';
+}
+function matches(g, q) { return !q || g.n.toLowerCase().indexOf(q) !== -1; }
+
+function render() {
+  var q = curQuery;
+  var gridAll = document.getElementById('grid-all');
+  var gridPc = document.getElementById('grid-pc');
+  var gridRetro = document.getElementById('grid-retro');
+  var empty = document.getElementById('empty');
+
+  var pc = PC_GAMES.filter(function (g) { return matches(g, q); });
+  var retro = RETRO_GAMES.filter(function (g) { return matches(g, q); });
+
+  gridPc.innerHTML = pc.map(pcCard).join('');
+  gridRetro.innerHTML = retro.map(retroCard).join('');
+  gridAll.innerHTML = pc.map(pcCard).join('') + retro.map(retroCard).join('');
+
+  document.getElementById('n-pc').textContent = pc.length;
+  document.getElementById('n-retro').textContent = retro.length;
+  document.getElementById('n-all').textContent = pc.length + retro.length;
+  document.getElementById('count').textContent = (pc.length + retro.length) + ' games';
+
+  gridAll.hidden = curTab !== 'all';
+  gridPc.hidden = curTab !== 'pc';
+  gridRetro.hidden = curTab !== 'retro';
+  document.getElementById('sec-label').textContent = curTab === 'pc' ? 'PC GAMES' : curTab === 'retro' ? 'RETRO & MORE' : 'ALL GAMES';
+  empty.hidden = curTab !== 'all' ? true : (pc.length + retro.length) > 0;
+  if (curTab === 'pc') empty.hidden = pc.length > 0;
+  if (curTab === 'retro') empty.hidden = retro.length > 0;
+}
+
+function setTab(t) {
+  curTab = t;
+  document.querySelectorAll('.tab').forEach(function (b) { b.classList.remove('active'); });
+  document.getElementById('tab-' + t).classList.add('active');
+  render();
+}
+
+function onSearch(v) { curQuery = v.trim().toLowerCase(); render(); }
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTA Vice City - la peace</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="topbar">
+  <a class="back" href="../index.html">&#8592; la peace</a>
+  <span class="gname">GTA Vice City</span>
+  <button class="fs" onclick="goFs()" title="Fullscreen">&#x26F6;</button>
+</div>
+<div class="stage" id="stage"><iframe id="game" srcdoc="&lt;div style=&quot;position:relative;width:100%;height:600px;background:#000;overflow:hidden;&quot;&gt;
+  &lt;button id=&quot;vc-fs-btn&quot; onclick=&quot;vcFs(this)&quot; style=&quot;position:absolute;top:8px;right:8px;z-index:9;padding:8px 14px;border:none;border-radius:6px;background:rgba(0,0,0,.65);color:#fff;font:600 13px Arial,sans-serif;cursor:pointer;&quot;&gt;&amp;#x26F6; Fullscreen&lt;/button&gt;
+  &lt;iframe id=&quot;vc-game&quot; src=&quot;https://vc.quenqsvicecity.com/&quot; style=&quot;position:absolute;inset:0;width:100%;height:100%;border:none;&quot;
+    allow=&quot;accelerometer; autoplay; bluetooth; camera; clipboard-read; clipboard-write; cross-origin-isolated; display-capture; encrypted-media; fullscreen; gamepad; geolocation; gyroscope; hid; identity-credentials-get; idle-detection; local-fonts; magnetometer; microphone; midi; payment; picture-in-picture; publickey-credentials-get; screen-wake-lock; serial; usb; web-share; window-management; xr-spatial-tracking; keyboard-map&quot;
+    allowfullscreen=&quot;true&quot; referrerpolicy=&quot;strict-origin-when-cross-origin&quot;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;script&gt;
+  function vcFs(b) {
+    var g = document.getElementById(&#39;vc-game&#39;);
+    var el = (document.fullscreenElement || document.webkitFullscreenElement);
+    if (el) {
+      if (document.exitFullscreen) document.exitFullscreen();
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      return;
+    }
+    var ok = false;
+    if (g.requestFullscreen) { g.requestFullscreen().then(function(){ok=true;}).catch(function(){}); }
+    else if (g.webkitRequestFullscreen) { g.webkitRequestFullscreen(); ok = true; }
+    if (!ok) {
+      if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function(){});
+      else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
+    }
+    try { g.contentWindow.focus(); } catch(e) {}
+  }
+&lt;/script&gt;" style="width:100%;height:100%;border:none;background:#000;" allow="accelerometer; autoplay; bluetooth; camera; clipboard-read; clipboard-write; cross-origin-isolated; display-capture; encrypted-media; fullscreen; gamepad; geolocation; gyroscope; hid; identity-credentials-get; idle-detection; local-fonts; magnetometer; microphone; midi; payment; picture-in-picture; publickey-credentials-get; screen-wake-lock; serial; usb; web-share; window-management; xr-spatial-tracking; keyboard-map" allowfullscreen="true"></iframe></div>
+<script>
+function goFs() {
+  var g = document.getElementById('game');
+  var el = document.fullscreenElement || document.webkitFullscreenElement;
+  if (el) {
+    if (document.exitFullscreen) document.exitFullscreen().catch(function(){});
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    return;
+  }
+  var ok = false;
+  if (g.requestFullscreen) { g.requestFullscreen().then(function(){ok=true;}).catch(function(){}); }
+  else if (g.webkitRequestFullscreen) { g.webkitRequestFullscreen(); ok = true; }
+  if (!ok) {
+    if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function(){});
+    else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
+  }
+}
+</script>
+</body>
+</html>

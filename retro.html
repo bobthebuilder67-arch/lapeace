@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retro Consoles - la peace</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .consoles { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; padding: 12px; }
+  .console-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid #d8e0e6;
+    background: #f2f5f7;
+    color: #212121;
+    font: 700 13px Lato, sans-serif;
+    cursor: pointer;
+    transition: all .12s;
+  }
+  .console-btn:hover { border-color: #226e93; color: #226e93; }
+  .console-btn.active { background: #226e93; color: #fff; border-color: #226e93; }
+  .hint {
+    text-align: center;
+    color: #5f6b73;
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  .hint a { color: #226e93; }
+  #game { background: #171c20; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="back" href="index.html">&#8592; la peace</a>
+  <span class="gname">Retro Consoles</span>
+  <button class="fs" onclick="goFs()" title="Fullscreen">&#x26F6;</button>
+</div>
+
+<div class="consoles" id="console-bar">
+  <button class="console-btn active" data-core="nes" onclick="pickCore('nes', this)">NES</button>
+  <button class="console-btn" data-core="snes" onclick="pickCore('snes', this)">SNES</button>
+  <button class="console-btn" data-core="gba" onclick="pickCore('gba', this)">GBA</button>
+  <button class="console-btn" data-core="n64" onclick="pickCore('n64', this)">N64</button>
+  <button class="console-btn" data-core="psx" onclick="pickCore('psx', this)">PS1</button>
+</div>
+
+<div class="hint" id="hint">Pick a console, then click <b>Load ROM</b> / drag &amp; drop a game file. Need games? GTA Vice City is on this site: <a href="games/gta-vice-city.html">Play GTA Vice City</a> &#8594;</div>
+
+<div class="stage" id="stage" style="flex:1;position:relative;background:#000;overflow:hidden;">
+  <div id="game" style="position:absolute;inset:0;"></div>
+</div>
+
+<script>
+var CURRENT_CORE = 'nes';
+var PATHTODATA = 'https://cdn.jsdelivr.net/gh/a456pur/seraph@81f551ca0aa8e3d6018d32d8ac5904ac9bc78f76/storage/emulatorjs/data/';
+var LOADER = 'https://cdn.jsdelivr.net/gh/a456pur/seraph@81f551ca0aa8e3d6018d32d8ac5904ac9bc78f76/storage/emulatorjs/data/loader.js';
+
+function pickCore(core, btn) {
+  if (core === CURRENT_CORE) return;
+  CURRENT_CORE = core;
+  document.querySelectorAll('.console-btn').forEach(function (b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  loadEJS();
+}
+
+function loadEJS() {
+  var box = document.getElementById('game');
+  box.innerHTML = '<div style="color:#fff;font-family:system-ui;padding:30px;text-align:center;">Loading emulator...</div>';
+  window.EJS_player = '#game';
+  window.EJS_core = CURRENT_CORE;
+  window.EJS_pathtodata = PATHTODATA;
+  window.EJS_language = 'en';
+  window.EJS_startOnLoaded = true;
+  var s = document.createElement('script');
+  s.src = LOADER + '?v=' + Date.now();
+  document.getElementById('game').appendChild(s);
+}
+
+function goFs() {
+  var g = document.getElementById('game');
+  var el = document.fullscreenElement || document.webkitFullscreenElement;
+  if (el) {
+    if (document.exitFullscreen) document.exitFullscreen().catch(function(){});
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    return;
+  }
+  var ok = false;
+  if (g.requestFullscreen) { g.requestFullscreen().then(function(){ok=true;}).catch(function(){}); }
+  else if (g.webkitRequestFullscreen) { g.webkitRequestFullscreen(); ok = true; }
+  if (!ok) {
+    if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function(){});
+    else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
+  }
+}
+
+loadEJS();
+</script>
+</body>
+</html>

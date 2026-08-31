@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FNF Self-Paced - la peace</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="topbar">
+  <a class="back" href="../index.html">&#8592; la peace</a>
+  <span class="gname">FNF Self-Paced</span>
+  <button class="fs" onclick="goFs()" title="Fullscreen">&#x26F6;</button>
+</div>
+<div class="stage" id="stage"><iframe id="game" srcdoc="&lt;html&gt;
+
+&lt;!-- Ultimate Game Stash file --&gt;
+&lt;!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ --&gt;
+
+&lt;html lang=&quot;en&quot;&gt;
+&lt;base href=&quot;https://cdn.jsdelivr.net/gh/bubbls/fnf-mods@main/self-paced/&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;title&gt;Game 26544&lt;/title&gt;
+  &lt;meta id=&quot;viewport&quot; name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
+  &lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;
+
+  &lt;script async src=&quot;https://www.googletagmanager.com/gtag/js?id=G-XEDEX0ZXP9&quot;&gt;&lt;/script&gt;
+  &lt;script&gt;
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag(&#39;js&#39;, new Date());
+    const pageName = location.pathname.split(&#39;/&#39;).pop() || &#39;index.html&#39;;
+    gtag(&#39;config&#39;, &#39;G-XEDEX0ZXP9&#39;, {
+      page_title: document.title,
+      page_location: &#39;https://drive.local/&#39; + pageName,
+      page_path: &#39;/&#39; + pageName
+    });
+  &lt;/script&gt;	&lt;link rel=&quot;shortcut icon&quot; type=&quot;image/png&quot; href=&quot;./favicon.png&quot;&gt;
+	
+	
+	&lt;script type=&quot;text/javascript&quot; src=&quot;./PsychEngine.js&quot;&gt;&lt;/script&gt;
+	
+	&lt;script&gt;
+		window.addEventListener (&quot;touchmove&quot;, function (event) { event.preventDefault (); }, { capture: false, passive: false });
+		if (typeof window.devicePixelRatio != &#39;undefined&#39; &amp;&amp; window.devicePixelRatio &gt; 2) {
+			var meta = document.getElementById (&quot;viewport&quot;);
+			meta.setAttribute (&#39;content&#39;, &#39;width=device-width, initial-scale=&#39; + (2 / window.devicePixelRatio) + &#39;, user-scalable=no&#39;);
+		}
+	&lt;/script&gt;
+	
+	&lt;style&gt;
+		html,body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+		#openfl-content { background: #000000; width: 100%; height: 100%; }
+		@font-face {
+			font-family: &#39;Bloody&#39;;
+			src: url(&#39;assets/fonts/Blood.eot?#iefix&#39;) format(&#39;embedded-opentype&#39;),
+			url(&#39;assets/fonts/Blood.ttf&#39;) format(&#39;truetype&#39;);
+			font-weight: normal;
+			font-style: normal;
+		}
+		@font-face {
+			font-family: &#39;Pixel Arial 11 Bold&#39;;
+			src: url(&#39;assets/fonts/pixel.eot?#iefix&#39;) format(&#39;embedded-opentype&#39;),
+			url(&#39;assets/fonts/pixel.woff&#39;) format(&#39;woff&#39;),
+			url(&#39;assets/fonts/pixel.otf&#39;) format(&#39;truetype&#39;);
+			font-weight: normal;
+			font-style: normal;
+		}
+		@font-face {
+			font-family: &#39;NiseSegaSonic&#39;;
+			src: url(&#39;assets/fonts/vcr.eot?#iefix&#39;) format(&#39;embedded-opentype&#39;),
+			url(&#39;assets/fonts/vcr.woff&#39;) format(&#39;woff&#39;),
+			url(&#39;assets/fonts/vcr.ttf&#39;) format(&#39;truetype&#39;),
+			url(&#39;assets/fonts/vcr.svg#NiseSegaSonic&#39;) format(&#39;svg&#39;);
+			font-weight: normal;
+			font-style: normal;
+		}
+		@font-face {
+			font-family: &#39;Nokia Cellphone FC Small&#39;;
+			src: url(&#39;flixel/fonts/nokiafc22.eot?#iefix&#39;) format(&#39;embedded-opentype&#39;),
+			url(&#39;flixel/fonts/nokiafc22.woff&#39;) format(&#39;woff&#39;),
+			url(&#39;flixel/fonts/nokiafc22.ttf&#39;) format(&#39;truetype&#39;),
+			url(&#39;flixel/fonts/nokiafc22.svg#Nokia%20Cellphone%20FC%20Small&#39;) format(&#39;svg&#39;);
+			font-weight: normal;
+			font-style: normal;
+		}
+		@font-face {
+			font-family: &#39;Monsterrat&#39;;
+			src: url(&#39;flixel/fonts/monsterrat.eot?#iefix&#39;) format(&#39;embedded-opentype&#39;),
+			url(&#39;flixel/fonts/monsterrat.woff&#39;) format(&#39;woff&#39;),
+			url(&#39;flixel/fonts/monsterrat.ttf&#39;) format(&#39;truetype&#39;),
+			url(&#39;flixel/fonts/monsterrat.svg#Monsterrat&#39;) format(&#39;svg&#39;);
+			font-weight: normal;
+			font-style: normal;
+		}
+
+	&lt;/style&gt;
+	
+&lt;/head&gt;
+&lt;body&gt;
+	
+	&lt;noscript&gt;This webpage makes extensive use of JavaScript. Please enable JavaScript in your web browser to view this page.&lt;/noscript&gt;
+	
+	&lt;div id=&quot;openfl-content&quot;&gt;&lt;/div&gt;
+	
+	&lt;script type=&quot;text/javascript&quot;&gt;
+		lime.embed (&quot;PsychEngine&quot;, &quot;openfl-content&quot;, 1280, 720, { parameters: {} });
+	&lt;/script&gt;
+	
+
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/assets/css.css&quot; type=&quot;text/css&quot; media=&quot;all&quot;/&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/assets/js.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" style="width:100%;height:100%;border:none;background:#000;" allow="accelerometer; autoplay; bluetooth; camera; clipboard-read; clipboard-write; cross-origin-isolated; display-capture; encrypted-media; fullscreen; gamepad; geolocation; gyroscope; hid; identity-credentials-get; idle-detection; local-fonts; magnetometer; microphone; midi; payment; picture-in-picture; publickey-credentials-get; screen-wake-lock; serial; usb; web-share; window-management; xr-spatial-tracking; keyboard-map" allowfullscreen="true"></iframe></div>
+<script>
+function goFs() {
+  var g = document.getElementById('game');
+  var el = document.fullscreenElement || document.webkitFullscreenElement;
+  if (el) {
+    if (document.exitFullscreen) document.exitFullscreen().catch(function(){});
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    return;
+  }
+  var ok = false;
+  if (g.requestFullscreen) { g.requestFullscreen().then(function(){ok=true;}).catch(function(){}); }
+  else if (g.webkitRequestFullscreen) { g.webkitRequestFullscreen(); ok = true; }
+  if (!ok) {
+    if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function(){});
+    else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
+  }
+}
+</script>
+</body>
+</html>

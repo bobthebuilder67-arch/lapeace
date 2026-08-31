@@ -1,0 +1,564 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emulator JS - la peace</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="topbar">
+  <a class="back" href="../index.html">&#8592; la peace</a>
+  <span class="gname">Emulator JS</span>
+  <button class="fs" onclick="goFs()" title="Fullscreen">&#x26F6;</button>
+</div>
+<div class="stage" id="stage"><iframe id="game" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        
+        
+        
+        &lt;title&gt;EmulatorJS | Demo&lt;/title&gt;
+        &lt;meta charset=&quot;UTF-8&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+        &lt;link rel=&quot;icon&quot; href=&quot;favicon.ico&quot; sizes=&quot;16x16 32x32 48x48 64x64&quot; type=&quot;image/vnd.microsoft.icon&quot;&gt;
+        &lt;link rel=&quot;apple-touch-icon&quot; href=&quot;img/icon.png&quot; /&gt;
+        &lt;link rel=&quot;manifest&quot; href=&quot;manifest.json&quot; /&gt;
+        &lt;meta name=&quot;theme-color&quot; content=&quot;#000&quot;/&gt;
+        &lt;style&gt;
+            body, html {
+                height: 100%;
+                background-color: black;
+                color: white;
+            }
+
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+
+            body, #box, #top {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            #box {
+                color: #aaa;
+                height: 20em;
+                width: 30em;
+                max-width: 80%;
+                max-height: 80%;
+                background-color: #333;
+                border-radius: 0.4em;
+                border: 2px solid #555;
+                position: relative;
+                flex-direction: column;
+                transition-duration: 0.2s;
+                overflow: hidden;
+                font-family: monospace;
+                font-weight: bold;
+                font-size: 20px;
+                margin: 5px;
+                padding: 10px;
+                text-align: center;
+            }
+
+            #box:hover, #box[drag] {
+                border-color: #38f;
+                color: #ddd
+            }
+
+            #input {
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+            }
+
+            #display {
+                width: 100%;
+                height: 100%
+            }
+
+            select, button {
+                padding: 0 0.4em;
+                margin: 0.5em 0.1em;
+                width: 15em;
+                max-width: 100%;
+                font-family: monospace;
+                font-weight: bold;
+                font-size: 16px;
+                background-color: #444;
+                color: #aaa;
+                border-radius: 0.4em;
+                border: 1px solid #555;
+                cursor: pointer;
+                transition-duration: 0.2s;
+                vertical-align:top;
+                height: 2.5em;
+            }
+
+            select:hover, button:hover {
+                background-color: #666;
+                color: #ddd
+            }
+
+            .logo {
+                width: 130px;
+                height: 130px;
+                filter: drop-shadow(0 0 10px white);
+            }
+
+            #top, #version {
+                margin: 5px;
+            }
+
+            #version button {
+                fill: #aaa;
+                width: auto;
+                padding: 0.2em 0.3em;
+                text-align: center;
+                margin: 0.5em 0.1em;
+            }
+            #version svg {
+                margin-top: 0.05em;
+                margin-left: 0.05em;
+                width: 1.8em;
+            }
+            .popup {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                width: 100%;
+                height: 100%;
+                z-index: 2000;
+                visibility: hidden;
+                -webkit-backface-visibility: hidden;
+                -moz-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+            .popup .content {
+                background-color: #333;
+                border-radius: 0.4em;
+                border: 2px solid #555;
+                padding: 1em;
+                max-width: 80%;
+                max-height: 80%;
+                min-width: 30%;
+                width: min-content;
+                position: fixed;
+            }
+            .show {
+                visibility: visible;
+            }
+            .popup-overlay {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                visibility: hidden;
+                top: 0;
+                left: 0;
+                z-index: 1000;
+                opacity: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                -webkit-transition: all 0.3s;
+                transition: all 0.3s;
+            }
+            .show ~ .popup-overlay {
+                opacity: 1;
+                visibility: visible;
+            }
+            .popup-animate .content {
+                -webkit-transform: translateX(-50%) translateY(-50%) scale(0.7);
+                -ms-transform: translateX(-50%) translateY(-50%) scale(0.7);
+                transform: translateX(-50%) translateY(-50%) scale(0.7);
+                opacity: 0;
+                -webkit-transition: all 0.3s;
+                transition: all 0.3s;
+            }
+            .show.popup-animate .content {
+                -webkit-transform: translateX(-50%) translateY(-50%) scale(1);
+                -ms-transform: translateX(-50%) translateY(-50%) scale(1);
+                transform: translateX(-50%) translateY(-50%) scale(1);
+                opacity: 1;
+            }
+            .popup .title, .popup .options p {
+                display: flex;
+                align-items: center;
+            }
+            .popup .options p {
+                margin: 1em 0;
+                font-size: 18px;
+            }
+            .popup .title h1 {
+                margin: 0 0 0.3em;
+                font-size: 48px;
+            }
+            .popup .options button {
+                width: auto;
+                padding: 0 0.5em;
+                font-weight: bold;
+                margin: 0 0.5em;
+                font-size: 14px;
+                border-radius: 0.4em;
+            }
+            .popup .bottom {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                margin-top: 1em;
+            }
+            #installbox {
+                display: inline-flex;
+                align-items: baseline;
+            }
+            #installboxtext {
+                margin-top: 0 !important;
+            }
+            button:disabled {
+                background-color: #666;
+                color: #aaa;
+                cursor: not-allowed;
+            }
+            .hide {
+                display: none !important;
+            }
+        &lt;/style&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id=&quot;top&quot;&gt;
+            &lt;h1&gt;EmulatorJS Demo&lt;/h1&gt;
+            &lt;img src=&quot;img/logo-light.png&quot; alt=&quot;Logo&quot; class=&quot;logo&quot;&gt;
+        &lt;/div&gt;
+        &lt;div id=&quot;box&quot;&gt;
+            &lt;input type=&quot;file&quot; id=&quot;input&quot;&gt;
+            Drag ROM file or click here
+        &lt;/div&gt;
+        &lt;div id=&quot;version&quot;&gt;
+            &lt;select id=&quot;version-select&quot;&gt;&lt;/select&gt;
+            &lt;button id=&quot;download&quot; class=&quot;hide&quot; onclick=&quot;downloadversion()&quot;&gt;
+                &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+                    &lt;path d=&quot;M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 6.854-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5a.5.5 0 0 1 1 0v3.793l1.146-1.147a.5.5 0 0 1 .708.708&quot;/&gt;
+                &lt;/svg&gt;
+                &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot;viewBox=&quot;0 0 16 16&quot;&gt;
+                    &lt;path d=&quot;M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 4.854-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/button&gt;
+            &lt;button id=&quot;settings&quot; onclick=&quot;openSettings()&quot;&gt;
+                &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 16 16&quot;&gt;
+                    &lt;path d=&quot;M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z&quot;/&gt;
+                &lt;/svg&gt;
+            &lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div id=&quot;popup-settings&quot; class=&quot;popup popup-animate&quot;&gt;
+            &lt;div class=&quot;content&quot;&gt;
+                &lt;div class=&quot;title&quot;&gt;
+                    &lt;h1&gt;Settings&lt;/h1&gt;
+                &lt;/div&gt;
+                &lt;div class=&quot;options&quot;&gt;
+                    &lt;p id=&quot;offline-status&quot;&gt;Offline Status: CHECKING&lt;/p&gt;
+                    &lt;p&gt;Offline Cores will be available soon.&lt;/p&gt;
+                    &lt;p class=&quot;hide&quot;&gt;Remove All Saved Versions: &lt;button id=&quot;remove-version&quot; onclick=&quot;removeallsaved()&quot;&gt;Remove All&lt;/button&gt;&lt;/p&gt;
+                    &lt;div id=&quot;installbox&quot;&gt;&lt;p id=&quot;installboxtext&quot;&gt;Install PWA:&lt;/p&gt; &lt;button id=&quot;install&quot;&gt;Install&lt;/button&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;div class=&quot;bottom&quot;&gt;
+                    &lt;button onclick=&quot;closeSettings()&quot;&gt;Close&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;popup-overlay&quot;&gt;&lt;/div&gt;
+        &lt;script&gt;
+            if (&quot;serviceWorker&quot; in navigator) {
+                const req = navigator.serviceWorker.register(&quot;https://cdn.jsdelivr.net/EmulatorJS/demo/sw.js&quot;);
+                console.log(req);
+            };
+            loadJSON(&quot;/versions&quot;, (response) =&gt; {
+                if (true) {
+                    loadJSON(&quot;https://cdn.emulatorjs.org/versions.json&quot;, resp =&gt; loadVersions(resp));
+                    document.getElementById(&quot;offline-status&quot;).textContent = &quot;Offline Status: NOT INSTALLED&quot;;
+                } else {
+                    loadVersions(response);
+                    document.getElementById(&quot;offline-status&quot;).textContent = &quot;Offline Status: READY&quot;;
+                }
+            });
+            function loadVersions(response) {
+                const version_select = document.getElementById(&quot;version-select&quot;);
+                var versions = JSON.parse(response);
+                version_select.innerHTML = &quot;&quot;;
+                addOptions(version_select, versions.releases, versions.default, versions.github);
+                addOptions(version_select, versions.versions, versions.default);
+                version_select.addEventListener(&quot;change&quot;, () =&gt; {
+                    localStorage.setItem(&quot;version&quot;, version_select[version_select.selectedIndex].textContent);
+                    window.cdn = &quot;https://cdn.jsdelivr.net/gh/genizy/emu@7bf5cbb0b94866568d2aaa1fd42ebb5acd517e0d/&quot;;
+                });
+            }
+            input.addEventListener(&quot;change&quot;, async () =&gt; {
+                const url = input.files[0];
+                const parts = input.files[0].name.split(&quot;.&quot;);
+
+                const core = await (async (ext) =&gt; {
+                    if ([&quot;fds&quot;, &quot;nes&quot;, &quot;unif&quot;, &quot;unf&quot;].includes(ext))
+                        return &quot;nes&quot;
+
+                    if ([&quot;smc&quot;, &quot;fig&quot;, &quot;sfc&quot;, &quot;gd3&quot;, &quot;gd7&quot;, &quot;dx2&quot;, &quot;bsx&quot;, &quot;swc&quot;].includes(ext))
+                        return &quot;snes&quot;
+
+                    if ([&quot;z64&quot;, &quot;n64&quot;].includes(ext))
+                        return &quot;n64&quot;
+
+                    if ([&quot;pce&quot;].includes(ext))
+                        return &quot;pce&quot;
+
+                    if ([&quot;ngp&quot;, &quot;ngc&quot;].includes(ext))
+                        return &quot;ngp&quot;
+
+                    if ([&quot;ws&quot;, &quot;wsc&quot;].includes(ext))
+                        return &quot;ws&quot;
+
+                    if ([&quot;col&quot;, &quot;cv&quot;].includes(ext))
+                        return &quot;coleco&quot;
+
+                    if ([&quot;d64&quot;].includes(ext))
+                        return &quot;vice_x64&quot;
+
+                    if ([&quot;nds&quot;, &quot;gba&quot;, &quot;gb&quot;, &quot;z64&quot;, &quot;n64&quot;].includes(ext))
+                        return ext
+
+                    return await new Promise(resolve =&gt; {
+                        const cores = {
+                            &quot;Nintendo 64&quot;: &quot;n64&quot;,
+                            &quot;Nintendo Game Boy&quot;: &quot;gb&quot;,
+                            &quot;Nintendo Game Boy Advance&quot;: &quot;gba&quot;,
+                            &quot;Nintendo DS&quot;: &quot;nds&quot;,
+                            &quot;Nintendo Entertainment System&quot;: &quot;nes&quot;,
+                            &quot;Super Nintendo Entertainment System&quot;: &quot;snes&quot;,
+                            &quot;PlayStation&quot;: &quot;psx&quot;,
+                            &quot;Virtual Boy&quot;: &quot;vb&quot;,
+                            &quot;Sega Mega Drive&quot;: &quot;segaMD&quot;,
+                            &quot;Sega Master System&quot;: &quot;segaMS&quot;,
+                            &quot;Sega CD&quot;: &quot;segaCD&quot;,
+                            &quot;Atari Lynx&quot;: &quot;lynx&quot;,
+                            &quot;Sega 32X&quot;: &quot;sega32x&quot;,
+                            &quot;Atari Jaguar&quot;: &quot;jaguar&quot;,
+                            &quot;Sega Game Gear&quot;: &quot;segaGG&quot;,
+                            &quot;Sega Saturn&quot;: &quot;segaSaturn&quot;,
+                            &quot;Atari 7800&quot;: &quot;atari7800&quot;,
+                            &quot;Atari 2600&quot;: &quot;atari2600&quot;,
+                            &quot;NEC TurboGrafx-16/SuperGrafx/PC Engine&quot;: &quot;pce&quot;,
+                            &quot;NEC PC-FX&quot;: &quot;pcfx&quot;,
+                            &quot;SNK NeoGeo Pocket (Color)&quot;: &quot;ngp&quot;,
+                            &quot;Bandai WonderSwan (Color)&quot;: &quot;ws&quot;,
+                            &quot;ColecoVision&quot;: &quot;coleco&quot;,
+                            &quot;Commodore 64&quot;: &quot;vice_x64&quot;,
+                            &quot;PlayStation Portable&quot;: &quot;psp&quot;
+                        }
+
+                        const button = document.createElement(&quot;button&quot;)
+                        const select = document.createElement(&quot;select&quot;)
+
+                        for (const type in cores) {
+                            const option = document.createElement(&quot;option&quot;)
+
+                            option.value = cores[type]
+                            option.textContent = type
+                            select.appendChild(option)
+                        }
+
+                        button.onclick = () =&gt; resolve(select[select.selectedIndex].value)
+                        button.textContent = &quot;Load game&quot;
+                        box.innerHTML = &quot;&quot;
+
+                        box.appendChild(select)
+                        box.appendChild(button)
+                    })
+                })(parts.pop())
+
+                const div = document.createElement(&quot;div&quot;)
+                const sub = document.createElement(&quot;div&quot;)
+                const script = document.createElement(&quot;script&quot;)
+
+                sub.id = &quot;game&quot;
+                div.id = &quot;display&quot;
+
+                const top = document.getElementById(&quot;top&quot;);
+                const version = document.getElementById(&quot;version&quot;);
+                top.remove();
+                version.remove();
+                box.remove();
+                div.appendChild(sub)
+                document.body.appendChild(div)
+
+                const cdn = window.cdn || &quot;https://cdn.jsdelivr.net/gh/genizy/emu@7bf5cbb0b94866568d2aaa1fd42ebb5acd517e0d/&quot;
+
+                window.EJS_player = &quot;#game&quot;;
+                window.EJS_gameName = parts.shift();
+                window.EJS_biosUrl = &quot;&quot;;
+                window.EJS_gameUrl = url;
+                window.EJS_core = core;
+                window.EJS_pathtodata = cdn;
+                window.EJS_startOnLoaded = true;
+                window.EJS_AdUrl = &quot;https://ads.emulatorjs.org/&quot;;
+                if (core === &quot;psp&quot;) {
+                    window.EJS_threads = true;
+                }
+                window.EJS_ready = function() {
+                    detectAdBlock(&quot;data:text/html;base64,PGh0bWw+PHN0eWxlPiNhZGJsb2Nre2JhY2tncm91bmQtY29sb3I6cmdiYSgwLDAsMCwuOCk7cG9zaXRpb246Zml4ZWQ7d2lkdGg6MTAwJTtoZWlnaHQ6MTAwJTt0b3A6MDtsZWZ0OjA7ei1pbmRleDoxMDAwO3RleHQtYWxpZ246Y2VudGVyO2NvbG9yOiNmZmZ9Ym9keSxodG1se2JhY2tncm91bmQtY29sb3I6dHJhbnNwYXJlbnR9PC9zdHlsZT48Ym9keSBzdHlsZT0ibWFyZ2luOjAiPjxkaXYgaWQ9ImFkYmxvY2siPjxoMT5IaSBBZGJsb2NrIFVzZXIhPC9oMT48cD5BZHMgb24gdGhpcyBwYWdlIG1heSBjb21lIGFuZCBnbyBkZXBlbmRpbmcgb24gaG93IG1hbnkgcGVvcGxlIGFyZSBmdW5kaW5nIHRoaXMgcHJvamVjdC48YnI+WW91IGNhbiBoZWxwIGZ1bmQgdGhpcyBwcm9qZWN0IG9uPGEgaHJlZj0iaHR0cHM6Ly9wYXRyZW9uLmNvbS9FbXVsYXRvckpTIj5wYXRyZW9uPC9hPjwvcD48L2Rpdj48L2JvZHk+PC9odG1sPg==&quot;);
+                }
+                
+                script.src = cdn + &quot;loader.js&quot;;
+                document.body.appendChild(script);
+            });
+
+            box.ondragover = () =&gt; box.setAttribute(&quot;drag&quot;, true);
+            box.ondragleave = () =&gt; box.removeAttribute(&quot;drag&quot;);
+
+            function detectAdBlock(url) {
+                let adBlockEnabled = false;
+                try {
+                    const adframe = document.querySelector(&#39;iframe[src=&quot;&#39;+window.EJS_AdUrl+&#39;&quot;]&#39;);
+                    var adpage = adframe.contentWindow.document;
+                    window.EJS_AdUrl = adframe.src;
+                    if (!adpage) {
+                        adBlockEnabled = true;
+                    }
+                } catch (e) {
+                    adBlockEnabled = true;
+                }
+                if (adBlockEnabled) {
+                    window.EJS_adBlocked(url);
+                    
+                }
+            }
+
+            function loadJSON(url, callback) {
+                var xobj = new XMLHttpRequest();
+                xobj.overrideMimeType(&quot;application/json&quot;);
+                xobj.open(&#39;GET&#39;, url, true);
+
+                xobj.onreadystatechange = function () {
+                    if (xobj.readyState === 4) {
+                        if (xobj.status === 200) {
+                            callback(xobj.responseText);
+                        } else {
+                            callback(null);
+                        }
+                    }
+                };
+
+                xobj.send();
+            }
+
+
+            function addOptions(select, options, default_option, github) {
+                for (const version in options) {
+                    const option = document.createElement(&quot;option&quot;);
+                    option.value = options[version];
+                    if (version == &quot;stable&quot;){
+                        option.textContent = &quot;stable (&quot;+github+&quot;)&quot;;
+                    } else {
+                        option.textContent = version;
+                    }
+                    option.selected = true;
+                    window.cdn = &quot;https://cdn.jsdelivr.net/gh/genizy/emu@7bf5cbb0b94866568d2aaa1fd42ebb5acd517e0d/&quot;;
+                    select.appendChild(option);
+                }
+            }
+
+            function openSettings() {
+                document.getElementById(&quot;popup-settings&quot;).classList.add(&quot;show&quot;);
+                if (localStorage.getItem(&quot;pwa&quot;) == &quot;false&quot;) {
+                    checkinstall();
+                }
+            }
+
+            function closeSettings() {
+                document.getElementById(&quot;popup-settings&quot;).classList.remove(&quot;show&quot;);
+            }
+
+            let installPrompt = null;
+            const installButton = document.querySelector(&quot;#install&quot;);
+            const installBox = document.querySelector(&quot;#installbox&quot;);
+            const installBoxText = document.querySelector(&quot;#installboxtext&quot;);
+            localStorage.setItem(&quot;pwa&quot;, &quot;false&quot;);
+
+            window.addEventListener(&quot;beforeinstallprompt&quot;, (event) =&gt; {
+                event.preventDefault();
+                installPrompt = event;
+                localStorage.setItem(&quot;pwa&quot;, &quot;true&quot;);
+                installButton.textContent = &quot;Install&quot;;
+                installButton.disabled = false;
+                console.log(&quot;Supported&quot;);
+            });
+            installButton.addEventListener(&quot;click&quot;, async () =&gt; {
+                if (!installPrompt) {
+                    return;
+                }
+                const result = await installPrompt.prompt();
+                console.log(`Install prompt was: ${result.outcome}`);
+                installPrompt = null;
+            });
+            function checkinstall(overide) {
+                console.log(&quot;Checking install&quot;);
+                if (navigator.userAgent.includes(&quot;Firefox&quot;) || (navigator.userAgent.includes(&quot;OPR&quot;) &amp;&amp; !navigator.userAgent.includes(&quot;Mobile&quot;))) {
+                    installButton.style.display = &quot;none&quot;;
+                    installBoxText.innerHTML = &quot;PWA&#39;s are not supported on this browser.&quot;;
+                    return;
+                }
+                if (window.matchMedia(&#39;(display-mode: standalone)&#39;).matches || overide) {
+                    installButton.textContent = &quot;Installed&quot;;
+                    installButton.disabled = true;
+                    installButton.style.display = &quot;inline&quot;;
+                    installBoxText.innerHTML = &quot;Install PWA: &quot;;
+                } else {
+                    installButton.style.display = &quot;none&quot;;
+                    if (navigator.userAgent.includes(&quot;Safari&quot;) &amp;&amp; !navigator.userAgent.includes(&quot;Chrome&quot;)) {
+                        installBoxText.innerHTML = &quot;PWA&#39;s are supported on this browser, but prompt is not supported.&lt;br&gt; Please install manually&quot;;
+                        return;
+                    }
+                    if (&#39;getInstalledRelatedApps&#39; in navigator) {
+                        navigator.getInstalledRelatedApps().then((relatedApps) =&gt; {
+                            if (relatedApps.length &gt; 0) {
+                                checkinstall(true);
+                                return;
+                            }
+                        });
+                    }
+                    installBoxText.innerHTML = &quot;PWA is either already installed, or prompt is not supported on this browser.&lt;br&gt; Please install manually.&lt;br&gt;Note: PWA&#39;s are not supported in Incognito/Private mode.&quot;;
+                }
+                
+            }
+            document.addEventListener(&#39;visibilitychange&#39;, function() {
+                window.matchMedia(&#39;(display-mode: standalone)&#39;).addListener(event =&gt; {
+                    if (event.matches) {
+                        checkinstall(true);
+                    }
+                });
+            });
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;" style="width:100%;height:100%;border:none;background:#000;" allow="accelerometer; autoplay; bluetooth; camera; clipboard-read; clipboard-write; cross-origin-isolated; display-capture; encrypted-media; fullscreen; gamepad; geolocation; gyroscope; hid; identity-credentials-get; idle-detection; local-fonts; magnetometer; microphone; midi; payment; picture-in-picture; publickey-credentials-get; screen-wake-lock; serial; usb; web-share; window-management; xr-spatial-tracking; keyboard-map" allowfullscreen="true"></iframe></div>
+<script>
+function goFs() {
+  var g = document.getElementById('game');
+  var el = document.fullscreenElement || document.webkitFullscreenElement;
+  if (el) {
+    if (document.exitFullscreen) document.exitFullscreen().catch(function(){});
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    return;
+  }
+  var ok = false;
+  if (g.requestFullscreen) { g.requestFullscreen().then(function(){ok=true;}).catch(function(){}); }
+  else if (g.webkitRequestFullscreen) { g.webkitRequestFullscreen(); ok = true; }
+  if (!ok) {
+    if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function(){});
+    else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
+  }
+}
+</script>
+</body>
+</html>
