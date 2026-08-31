@@ -185,3 +185,5 @@ a { color: var(--accent); text-decoration: none; }
 .card.img-card img { transition: transform .25s ease; }
 
 .empty { color: var(--muted); text-align: center; padding: 50px 0; font-size: 14px; }
+.sec { margin-bottom: 14px; }
+.sec.hidden { display: none; }
