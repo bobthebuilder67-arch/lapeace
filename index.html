@@ -11,28 +11,26 @@
   <div class="navbar">
     <a class="brand" href="index.html">la peace</a>
     <div class="tabs">
-      <button class="tab active" id="tab-all" onclick="setTab('all')">ALL <span class="n" id="n-all"></span></button>
-      <button class="tab" id="tab-pc" onclick="setTab('pc')">PC GAMES <span class="n" id="n-pc"></span></button>
-      <button class="tab" id="tab-retro" onclick="setTab('retro')">RETRO &amp; MORE <span class="n" id="n-retro"></span></button>
+      <button class="tab active" id="tab-pc" onclick="setTab('pc')">PC <span class="n" id="n-pc"></span></button>
+      <button class="tab" id="tab-games" onclick="setTab('games')">WEB <span class="n" id="n-games"></span></button>
     </div>
   </div>
 
   <div class="hero" style="background-image:url('https://lh3.googleusercontent.com/sitesv/AG8ngQULNZ-5CO-RkNNo79W6jTmkmJpqAMlRyIAJk9B-4RK0j9mcHyj6O3r2-7rIBTAPoh9TFkBnq3tkxOENBqp-qWTm_X_9thwCgm31Wi57ai9ByHlD4YxcDM2SnzAYmv3mmy7-ePmfexhLQ5qt46V7Xnnv7iVg1uXBu-RTbNuHZnvcTE3cu8EfhI7O7XVKpac=w1920');">
     <h1>la peace</h1>
-    <p>Your game hub</p>
+    <p>Home</p>
   </div>
 
   <div class="controls">
-    <input class="search" type="text" id="search" placeholder="Search games..." oninput="onSearch(this.value)">
+    <input class="search" type="text" id="search" placeholder="Search..." oninput="onSearch(this.value)">
     <p class="count" id="count"></p>
   </div>
 
   <div class="grid-wrap">
-    <div class="section-label" id="sec-label">ALL GAMES</div>
-    <div class="grid" id="grid-all"></div>
-    <div class="grid" id="grid-pc" data-tab="pc" hidden></div>
-    <div class="grid" id="grid-retro" hidden></div>
-    <div class="empty" id="empty" hidden>No games match your search.</div>
+    <div class="section-label" id="sec-label">PC</div>
+    <div class="grid" id="grid-pc" data-tab="pc"></div>
+    <div class="grid" id="grid-games" hidden></div>
+    <div class="empty" id="empty" hidden>No items match your search.</div>
   </div>
 </div>
 
@@ -115,7 +113,7 @@ var RETRO_GAMES = [
   {t:"&#128125;", n:"Deltarune: A Different Snowgrave", u:"games/deltarune-a-different-snowgrave.html"}
 ];
 
-var curTab = 'all', curQuery = '';
+var curTab = 'pc', curQuery = '';
 
 function pcCard(g) {
   return '<a class="card img-card" href="' + g.url + '"><img src="' + g.img + '" alt="' + g.n + '" loading="lazy"><div class="c-body"><span class="c-name">' + g.n + '</span><div class="c-sub">port by ' + g.sub + '</div></div></a>';
@@ -127,30 +125,24 @@ function matches(g, q) { return !q || g.n.toLowerCase().indexOf(q) !== -1; }
 
 function render() {
   var q = curQuery;
-  var gridAll = document.getElementById('grid-all');
   var gridPc = document.getElementById('grid-pc');
-  var gridRetro = document.getElementById('grid-retro');
+  var gridGames = document.getElementById('grid-games');
   var empty = document.getElementById('empty');
 
   var pc = PC_GAMES.filter(function (g) { return matches(g, q); });
-  var retro = RETRO_GAMES.filter(function (g) { return matches(g, q); });
+  var games = RETRO_GAMES.filter(function (g) { return matches(g, q); });
 
   gridPc.innerHTML = pc.map(pcCard).join('');
-  gridRetro.innerHTML = retro.map(retroCard).join('');
-  gridAll.innerHTML = pc.map(pcCard).join('') + retro.map(retroCard).join('');
+  gridGames.innerHTML = games.map(retroCard).join('');
 
   document.getElementById('n-pc').textContent = pc.length;
-  document.getElementById('n-retro').textContent = retro.length;
-  document.getElementById('n-all').textContent = pc.length + retro.length;
-  document.getElementById('count').textContent = (pc.length + retro.length) + ' games';
+  document.getElementById('n-games').textContent = games.length;
+  document.getElementById('count').textContent = curTab === 'pc' ? pc.length + ' items' : games.length + ' items';
 
-  gridAll.hidden = curTab !== 'all';
   gridPc.hidden = curTab !== 'pc';
-  gridRetro.hidden = curTab !== 'retro';
-  document.getElementById('sec-label').textContent = curTab === 'pc' ? 'PC GAMES' : curTab === 'retro' ? 'RETRO & MORE' : 'ALL GAMES';
-  empty.hidden = curTab !== 'all' ? true : (pc.length + retro.length) > 0;
-  if (curTab === 'pc') empty.hidden = pc.length > 0;
-  if (curTab === 'retro') empty.hidden = retro.length > 0;
+  gridGames.hidden = curTab !== 'games';
+  document.getElementById('sec-label').textContent = curTab === 'pc' ? 'PC' : 'WEB';
+  empty.hidden = curTab === 'pc' ? pc.length > 0 : games.length > 0;
 }
 
 function setTab(t) {

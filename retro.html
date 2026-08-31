@@ -40,6 +40,7 @@
   <button class="console-btn active" data-core="nes" onclick="pickCore('nes', this)">NES</button>
   <button class="console-btn" data-core="snes" onclick="pickCore('snes', this)">SNES</button>
   <button class="console-btn" data-core="gba" onclick="pickCore('gba', this)">GBA</button>
+  <button class="console-btn" data-core="gb" onclick="pickCore('gb', this)">Game Boy</button>
   <button class="console-btn" data-core="n64" onclick="pickCore('n64', this)">N64</button>
   <button class="console-btn" data-core="psx" onclick="pickCore('psx', this)">PS1</button>
 </div>
@@ -52,8 +53,8 @@
 
 <script>
 var CURRENT_CORE = 'nes';
-var PATHTODATA = 'https://cdn.jsdelivr.net/gh/a456pur/seraph@81f551ca0aa8e3d6018d32d8ac5904ac9bc78f76/storage/emulatorjs/data/';
-var LOADER = 'https://cdn.jsdelivr.net/gh/a456pur/seraph@81f551ca0aa8e3d6018d32d8ac5904ac9bc78f76/storage/emulatorjs/data/loader.js';
+var PATHTODATA = 'https://cdn.emulatorjs.org/stable/data/';
+var LOADER = 'https://cdn.emulatorjs.org/stable/data/loader.js';
 
 function pickCore(core, btn) {
   if (core === CURRENT_CORE) return;
