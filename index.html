@@ -527,15 +527,15 @@
         <div class="settings-card">
           <h3>Cloak Site</h3>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn-settings gold" onclick="hideSite()">&#128274; Hide as about:blank</button>
-            <button class="btn-settings" onclick="unhideSite()">Restore</button>
+            <button class="btn-settings gold" onclick="cloakAsCanvas()">&#128274; Hide as Canvas</button>
+            <button class="btn-settings" onclick="restoreSite()">Restore</button>
           </div>
-          <div class="settings-hint">Hides <b>this</b> tab as a blank tab — the name and icon become empty, so it looks like nothing is open. Stays hidden after refresh.</div>
+          <div class="settings-hint">Hides <b>this</b> tab as Canvas — the tab name and icon change to Canvas. Stays hidden after refresh.</div>
         </div>
         <div class="settings-card">
-          <h3>Canvas Tab</h3>
-          <button class="btn-settings gold" onclick="openCanvasTab()">&#127912; Open Canvas Tab</button>
-          <div class="settings-hint">Opens a new tab that looks like the real Canvas login page. The site stays open in this tab.</div>
+          <h3>Login Tab</h3>
+          <button class="btn-settings gold" onclick="openWindowsTab()">&#128421;&#65039; Open Windows Login</button>
+          <div class="settings-hint">Opens a new tab that looks like the Windows login screen. Any password works. The site stays open in this tab.</div>
         </div>
         <div class="settings-card">
           <h3>Preferences</h3>
@@ -600,42 +600,52 @@ function setFavicon(href) {
   l.href = href;
 }
 
-function hideSite() {
-  document.title = 'about:blank';
-  setFavicon(BLANK_ICON);
-  localStorage.setItem('lapeace_cloak', 'blank');
+function cloakAsCanvas() {
+  document.title = 'Canvas';
+  setFavicon(CANVAS_ICON);
+  localStorage.setItem('lapeace_cloak', 'canvas');
 }
 
-function unhideSite() {
+function restoreSite() {
   document.title = 'la peace';
   setFavicon('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%8C%B4%3C/text%3E%3C/svg%3E');
   localStorage.removeItem('lapeace_cloak');
 }
 
-function openCanvasTab() {
+function openWindowsTab() {
   var w = window.open('about:blank', '_blank');
   if (!w) return;
-  var page = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Canvas</title>' +
-    '<link rel="icon" href="' + CANVAS_ICON + '">' +
+  var page = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Windows</title>' +
     '<style>' +
-    'body{margin:0;font-family:system-ui,Arial,sans-serif;background:#f5f5f5;min-height:100vh;}' +
-    '.header{background:#1a4e8a;color:#fff;padding:10px 24px;font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px;box-shadow:0 2px 4px rgba(0,0,0,.2);}' +
-    '.logo{width:26px;height:26px;background:#fff;color:#1a4e8a;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;}' +
-    '.wrap{max-width:400px;margin:80px auto;background:#fff;border:1px solid #ddd;border-radius:8px;padding:28px;box-shadow:0 4px 16px rgba(0,0,0,.08);}' +
-    '.wrap h2{margin:0 0 4px;font-size:20px;color:#333;}' +
-    '.wrap p{color:#777;font-size:13px;margin:0 0 18px;}' +
-    'label{display:block;font-size:12px;color:#555;margin:12px 0 4px;}' +
-    'input{width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid #ccc;border-radius:4px;font-size:14px;}' +
-    '.btn{display:block;width:100%;margin-top:18px;padding:10px;background:#1a4e8a;color:#fff;border:none;border-radius:4px;font-size:15px;font-weight:600;cursor:pointer;}' +
-    '.foot{text-align:center;color:#aaa;font-size:11px;margin-top:14px;}' +
+    'body{margin:0;height:100vh;overflow:hidden;font-family:"Segoe UI",system-ui,Arial,sans-serif;color:#fff;' +
+    'background:linear-gradient(135deg,#0b3a6b 0%,#1a6fb5 35%,#0d2b52 70%,#071c38 100%);}' +
+    '.blob{position:fixed;border-radius:50%;filter:blur(60px);opacity:.35;}' +
+    '.b1{width:420px;height:420px;background:#3a9bd8;top:-80px;left:-60px;}' +
+    '.b2{width:380px;height:380px;background:#7cc4f2;bottom:-100px;right:-60px;}' +
+    '.clock{position:absolute;top:20%;left:50%;transform:translateX(-50%);text-align:center;text-shadow:0 2px 12px rgba(0,0,0,.4);}' +
+    '.t{font-size:78px;font-weight:200;letter-spacing:2px;}' +
+    '.d{font-size:20px;opacity:.85;margin-top:6px;}' +
+    '.user{position:absolute;bottom:9%;left:50%;transform:translateX(-50%);text-align:center;}' +
+    '.ava{width:118px;height:118px;border-radius:50%;border:3px solid rgba(255,255,255,.5);background:linear-gradient(135deg,#4fa3d8,#24568c);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 10px;box-shadow:0 6px 24px rgba(0,0,0,.4);}' +
+    '.u{font-size:16px;font-weight:600;margin-bottom:14px;text-shadow:0 1px 6px rgba(0,0,0,.5);}' +
+    '.pw{display:flex;align-items:center;justify-content:center;gap:8px;}' +
+    'input{border:none;border-radius:6px;padding:10px 14px;font-size:14px;background:rgba(255,255,255,.92);color:#111;outline:none;width:200px;}' +
+    '.go{width:38px;height:38px;border-radius:50%;border:none;background:#fff;color:#111;font-size:16px;cursor:pointer;font-weight:700;}' +
+    '.go:hover{background:#ddd;}' +
+    '#msg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:46px;font-weight:200;background:linear-gradient(135deg,#0d2b52,#1a6fb5);}' +
     '</style></head><body>' +
-    '<div class="header"><span class="logo">C</span>Canvas</div>' +
-    '<div class="wrap"><h2>Log In</h2><p>Canvas @ Your School</p>' +
-    '<label>Username</label><input type="text" value="student123">' +
-    '<label>Password</label><input type="password" value="password">' +
-    '<button class="btn" onclick="this.textContent=\'Logging in...\'">Log In</button>' +
-    '<div class="foot">Powered by Canvas LMS</div></div>' +
-    '</body></html>';
+    '<div class="blob b1"></div><div class="blob b2"></div>' +
+    '<div class="clock"><div class="t" id="t">--:--</div><div class="d" id="d"></div></div>' +
+    '<div class="user"><div class="ava">S</div><div class="u">Student</div>' +
+    '<div class="pw"><input type="password" id="p" placeholder="Password" onkeydown="if(event.key===\'Enter\')signIn()"><button class="go" onclick="signIn()">&#10148;</button></div></div>' +
+    '<div id="msg">Welcome</div>' +
+    '<script>' +
+    'function tick(){var n=new Date();var h=n.getHours().toString().padStart(2,"0"),m=n.getMinutes().toString().padStart(2,"0");' +
+    'document.getElementById("t").textContent=h+":"+m;' +
+    'document.getElementById("d").textContent=n.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});}' +
+    'tick();setInterval(tick,1000);' +
+    'function signIn(){var msg=document.getElementById("msg");msg.style.display="flex";msg.style.opacity="0";msg.style.transition="opacity .4s";setTimeout(function(){msg.style.opacity="1"},20);}' +
+    '<\/script></body></html>';
   w.document.open();
   w.document.write(page);
   w.document.close();
@@ -647,7 +657,7 @@ function resetPrefs() {
   localStorage.removeItem('lapeace_cloak');
   applyTheme('dark');
   setBackground('image', null);
-  unhideSite();
+  restoreSite();
 }
 
 function showSec(id) {
@@ -678,7 +688,7 @@ function onSearch(q) {
 
 applyTheme(localStorage.getItem('lapeace_theme') || 'dark');
 setBackground(localStorage.getItem('lapeace_bg') || 'image', null);
-if (localStorage.getItem('lapeace_cloak') === 'blank') hideSite();
+if (localStorage.getItem('lapeace_cloak') === 'canvas') cloakAsCanvas();
 </script>
 </body>
 </html>
