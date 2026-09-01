@@ -215,3 +215,25 @@ a { color: var(--accent); text-decoration: none; }
 .btn-settings.gold:hover { filter: brightness(1.1); }
 .settings-hint { color: var(--muted); font-size: 12.5px; line-height: 1.6; margin-top: 10px; }
 .settings-hint code { background: var(--panel2); padding: 2px 6px; border-radius: 5px; color: var(--text); }
+
+/* ---------- login overlay ---------- */
+.login-overlay {
+  position: fixed; inset: 0; z-index: 99999; color: #fff;
+  font-family: "Segoe UI", system-ui, Arial, sans-serif;
+  background: linear-gradient(135deg,#0b3a6b 0%,#1a6fb5 35%,#0d2b52 70%,#071c38 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.lo-blob { position: fixed; border-radius: 50%; filter: blur(60px); opacity: .35; }
+.lo-b1 { width: 420px; height: 420px; background: #3a9bd8; top: -80px; left: -60px; }
+.lo-b2 { width: 380px; height: 380px; background: #7cc4f2; bottom: -100px; right: -60px; }
+.lo-clock { position: absolute; top: 16%; left: 50%; transform: translateX(-50%); text-align: center; text-shadow: 0 2px 12px rgba(0,0,0,.4); }
+.lo-t { font-size: 84px; font-weight: 200; letter-spacing: 2px; }
+.lo-d { font-size: 22px; opacity: .85; margin-top: 6px; }
+.lo-user { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); text-align: center; }
+.lo-ava { width: 118px; height: 118px; border-radius: 50%; border: 3px solid rgba(255,255,255,.5); background: linear-gradient(135deg,#4fa3d8,#24568c); display: flex; align-items: center; justify-content: center; font-size: 44px; margin: 0 auto 10px; box-shadow: 0 6px 24px rgba(0,0,0,.4); }
+.lo-u { font-size: 16px; font-weight: 600; margin-bottom: 14px; text-shadow: 0 1px 6px rgba(0,0,0,.5); }
+.lo-pw { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.lo-pw input { border: none; border-radius: 6px; padding: 10px 14px; font-size: 14px; background: rgba(255,255,255,.92); color: #111; outline: none; width: 200px; }
+.lo-go { width: 38px; height: 38px; border-radius: 50%; border: none; background: #fff; color: #111; font-size: 16px; cursor: pointer; font-weight: 700; }
+.lo-go:hover { background: #ddd; }
+.lo-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 46px; font-weight: 200; background: linear-gradient(135deg,#0d2b52,#1a6fb5); opacity: 0; pointer-events: none; transition: opacity .4s; }

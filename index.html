@@ -546,8 +546,19 @@
       </div>
     </div>
 
-    <div class="empty" id="empty" hidden>No items match your search.</div>
+<div class="empty" id="empty" hidden>No items match your search.</div>
   </div>
+</div>
+
+<div id="login-overlay" class="login-overlay">
+  <div class="lo-blob lo-b1"></div><div class="lo-blob lo-b2"></div>
+  <div class="lo-clock"><div class="lo-t" id="lo-t">--:--</div><div class="lo-d" id="lo-d"></div></div>
+  <div class="lo-user">
+    <div class="lo-ava" id="lo-ava">S</div>
+    <div class="lo-u" id="lo-u">Student</div>
+    <div class="lo-pw"><input type="password" id="lo-p" placeholder="Password" autocomplete="off"><button class="lo-go" onclick="loSignIn()">&#10148;</button></div>
+  </div>
+  <div class="lo-msg" id="lo-msg">Welcome</div>
 </div>
 
 <script>
@@ -703,7 +714,36 @@ function onSearch(q) {
 
 applyTheme(localStorage.getItem('lapeace_theme') || 'dark');
 setBackground(localStorage.getItem('lapeace_bg') || 'image', null);
-if (localStorage.getItem('lapeace_cloak') !== 'off') cloakAsCanvas();
+
+function loTick() {
+  var n = new Date();
+  var h = n.getHours().toString().padStart(2, '0');
+  var m = n.getMinutes().toString().padStart(2, '0');
+  document.getElementById('lo-t').textContent = h + ':' + m;
+  document.getElementById('lo-d').textContent = n.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+}
+
+function loSignIn() {
+  var o = document.getElementById('login-overlay');
+  var msg = document.getElementById('lo-msg');
+  msg.style.opacity = '1';
+  setTimeout(function () {
+    o.style.transition = 'opacity .5s';
+    o.style.opacity = '0';
+    setTimeout(function () { o.style.display = 'none'; }, 500);
+  }, 400);
+}
+
+function loInit() {
+  var un = localStorage.getItem('lapeace_loginname') || 'Student';
+  document.getElementById('lo-u').textContent = un;
+  document.getElementById('lo-ava').textContent = un.charAt(0).toUpperCase() || 'S';
+  loTick();
+  setInterval(loTick, 1000);
+  document.getElementById('lo-p').addEventListener('keydown', function (e) { if (e.key === 'Enter') loSignIn(); });
+  document.getElementById('lo-p').focus();
+}
+loInit();
 var lnSaved = localStorage.getItem('lapeace_loginname');
 if (lnSaved) {
   var lnInput = document.getElementById('login-name');
