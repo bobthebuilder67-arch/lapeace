@@ -512,10 +512,25 @@
             <div class="swatch" data-theme="violet" style="background:#1b1030;" onclick="setTheme('violet',this)" title="Violet"></div>
           </div>
         </div>
+<div class="settings-card">
+          <h3>Background</h3>
+          <div class="swatches">
+            <div class="swatch active" data-bg="image" style="background:url('https://lh3.googleusercontent.com/sitesv/AG8ngQULNZ-5CO-RkNNo79W6jTmkmJpqAMlRyIAJk9B-4RK0j9mcHyj6O3r2-7rIBTAPoh9TFkBnq3tkxOENBqp-qWTm_X_9thwCgm31Wi57ai9ByHlD4YxcDM2SnzAYmv3mmy7-ePmfexhLQ5qt46V7Xnnv7iVg1uXBu-RTbNuHZnvcTE3cu8EfhI7O7XVKpac=w400'); background-size:cover; background-position:center;" onclick="setBackground('image',this)" title="Image"></div>
+            <div class="swatch" data-bg="grad-teal" style="background:linear-gradient(135deg,#0b2545,#22d3ee);" onclick="setBackground('grad-teal',this)" title="Teal"></div>
+            <div class="swatch" data-bg="grad-purple" style="background:linear-gradient(135deg,#2d1b3d,#a78bfa);" onclick="setBackground('grad-purple',this)" title="Purple"></div>
+            <div class="swatch" data-bg="grad-sunset" style="background:linear-gradient(135deg,#2d1b3d,#fb7185);" onclick="setBackground('grad-sunset',this)" title="Sunset"></div>
+            <div class="swatch" data-bg="grad-gold" style="background:linear-gradient(135deg,#241d05,#f1c40f);" onclick="setBackground('grad-gold',this)" title="Gold"></div>
+            <div class="swatch" data-bg="grad-mint" style="background:linear-gradient(135deg,#0f2e22,#34d399);" onclick="setBackground('grad-mint',this)" title="Mint"></div>
+          </div>
+          <div class="settings-hint">Pick the banner background behind the title. Saved automatically.</div>
+        </div>
         <div class="settings-card">
           <h3>Cloak</h3>
-          <button class="btn-settings gold" onclick="openCloak()">&#128274; Open Cloaked Tab</button>
-          <div class="settings-hint">Opens a new tab that looks like a clock (canvas background) so nothing suspicious shows in the tab bar. The site stays open in this tab.</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-settings gold" onclick="openCloak('blank')">&#128274; Blank Tab</button>
+            <button class="btn-settings gold" onclick="openCloak('canvas')">&#127912; Canvas Tab</button>
+          </div>
+          <div class="settings-hint">Both open a new tab that looks completely innocent — no clock, nothing suspicious in the tab bar. The site stays open in this tab.</div>
         </div>
         <div class="settings-card">
           <h3>Preferences</h3>
@@ -554,39 +569,51 @@ function applyTheme(name) {
 
 function setTheme(name, el) { applyTheme(name); }
 
-function openCloak() {
+function setBackground(name, el) {
+  var BGS = {
+    image: "url('https://lh3.googleusercontent.com/sitesv/AG8ngQULNZ-5CO-RkNNo79W6jTmkmJpqAMlRyIAJk9B-4RK0j9mcHyj6O3r2-7rIBTAPoh9TFkBnq3tkxOENBqp-qWTm_X_9thwCgm31Wi57ai9ByHlD4YxcDM2SnzAYmv3mmy7-ePmfexhLQ5qt46V7Xnnv7iVg1uXBu-RTbNuHZnvcTE3cu8EfhI7O7XVKpac=w1920')",
+    'grad-teal': 'linear-gradient(135deg,#0b2545,#22d3ee)',
+    'grad-purple': 'linear-gradient(135deg,#2d1b3d,#a78bfa)',
+    'grad-sunset': 'linear-gradient(135deg,#2d1b3d,#fb7185)',
+    'grad-gold': 'linear-gradient(135deg,#241d05,#f1c40f)',
+    'grad-mint': 'linear-gradient(135deg,#0f2e22,#34d399)'
+  };
+  var hero = document.querySelector('.hero');
+  if (hero) hero.style.backgroundImage = BGS[name] || BGS.image;
+  localStorage.setItem('lapeace_bg', name);
+  document.querySelectorAll('[data-bg]').forEach(function (s) {
+    s.classList.toggle('active', s.getAttribute('data-bg') === name);
+  });
+}
+
+function openCloak(kind) {
   var w = window.open('about:blank', '_blank');
   if (!w) return;
-  var clockPage = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Clock</title><style>' +
-    'html,body{margin:0;height:100%;overflow:hidden;background:#0b1020;color:#e8edf5;font-family:system-ui,Arial,sans-serif;}' +
+  var body = '';
+  if (kind === 'canvas') {
+    body = '<canvas id="c"></canvas><script>' +
+      'var cv=document.getElementById("c"),x=cv.getContext("2d"),p=[];' +
+      'function rs(){cv.width=innerWidth;cv.height=innerHeight;}addEventListener("resize",rs);rs();' +
+      'for(var i=0;i<70;i++)p.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*2.5+0.5,s:Math.random()*0.8+0.15,h:Math.random()*360});' +
+      'function loop(){x.clearRect(0,0,cv.width,cv.height);' +
+      'p.forEach(function(d){x.beginPath();x.arc(d.x,d.y,d.r,0,7);x.fillStyle="hsla("+d.h+",70%,60%,0.55)";x.fill();d.y-=d.s;d.x+=Math.sin((d.y+d.h)/40)*0.3;if(d.y<-5){d.y=cv.height+5;d.x=Math.random()*cv.width;}});' +
+      'requestAnimationFrame(loop);}loop();' +
+      '<\/script>';
+  }
+  var page = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Home</title><style>' +
+    'html,body{margin:0;height:100%;overflow:hidden;background:linear-gradient(135deg,#0b2545,#1b1030);}' +
     'canvas{position:fixed;inset:0;width:100%;height:100%;}' +
-    '.clock{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2;}' +
-    '.time{font-size:72px;font-weight:200;letter-spacing:4px;text-shadow:0 0 30px rgba(78,201,240,.4);}' +
-    '.date{font-size:16px;color:#8fa1b5;letter-spacing:2px;margin-top:8px;}' +
-    '</style></head><body><canvas id="c"></canvas>' +
-    '<div class="clock"><div class="time" id="t">--:--:--</div><div class="date" id="d"></div></div>' +
-    '<script>' +
-    'var cv=document.getElementById("c"),x=cv.getContext("2d"),p=[];' +
-    'function rs(){cv.width=innerWidth;cv.height=innerHeight;}' +
-    'addEventListener("resize",rs);rs();' +
-    'for(var i=0;i<60;i++)p.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*2+1,s:Math.random()*0.6+0.2});' +
-    'function loop(){x.fillStyle="rgba(11,16,32,0.25)";x.fillRect(0,0,cv.width,cv.height);' +
-    'p.forEach(function(d){x.beginPath();x.arc(d.x,d.y,d.r,0,7);x.fillStyle="rgba(78,201,240,0.5)";x.fill();d.y-=d.s;if(d.y<-5){d.y=cv.height+5;d.x=Math.random()*cv.width;}});' +
-    'requestAnimationFrame(loop);}loop();' +
-    'function tick(){var n=new Date();var h=n.getHours().toString().padStart(2,"0"),m=n.getMinutes().toString().padStart(2,"0"),s=n.getSeconds().toString().padStart(2,"0");' +
-    'document.getElementById("t").textContent=h+":"+m+":"+s;' +
-    'document.getElementById("d").textContent=n.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"});}' +
-    'tick();setInterval(tick,1000);' +
-    '<\/script></body></html>';
+    '</style></head><body>' + body + '</body></html>';
   w.document.open();
-  w.document.write(clockPage);
+  w.document.write(page);
   w.document.close();
 }
 
 function resetPrefs() {
   localStorage.removeItem('lapeace_theme');
-  localStorage.removeItem('lapeace_cloak_title');
+  localStorage.removeItem('lapeace_bg');
   applyTheme('dark');
+  setBackground('image', null);
 }
 
 function showSec(id) {
@@ -616,6 +643,7 @@ function onSearch(q) {
 }
 
 applyTheme(localStorage.getItem('lapeace_theme') || 'dark');
+setBackground(localStorage.getItem('lapeace_bg') || 'image', null);
 </script>
 </body>
 </html>
