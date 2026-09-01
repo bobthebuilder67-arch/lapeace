@@ -535,7 +535,9 @@
         <div class="settings-card">
           <h3>Login Tab</h3>
           <button class="btn-settings gold" onclick="openWindowsTab()">&#128421;&#65039; Open Windows Login</button>
-          <div class="settings-hint">Opens a new tab that looks like the Windows login screen. Any password works. The site stays open in this tab.</div>
+          <label style="display:block;margin-top:14px;font-size:12px;color:var(--muted);">Login name</label>
+          <input type="text" id="login-name" placeholder="Student" value="Student" oninput="saveLoginName(this.value)" style="width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--panel2);color:var(--text);font-size:14px;outline:none;">
+          <div class="settings-hint">The name shown on the Windows login screen. Any password works.</div>
         </div>
         <div class="settings-card">
           <h3>Preferences</h3>
@@ -606,15 +608,25 @@ function cloakAsCanvas() {
   localStorage.setItem('lapeace_cloak', 'canvas');
 }
 
-function restoreSite() {
+function restoreVisual() {
   document.title = 'la peace';
   setFavicon('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%8C%B4%3C/text%3E%3C/svg%3E');
-  localStorage.removeItem('lapeace_cloak');
+}
+
+function restoreSite() {
+  restoreVisual();
+  localStorage.setItem('lapeace_cloak', 'off');
+}
+
+function saveLoginName(v) {
+  localStorage.setItem('lapeace_loginname', v || 'Student');
 }
 
 function openWindowsTab() {
   var w = window.open('about:blank', '_blank');
   if (!w) return;
+  var uname = localStorage.getItem('lapeace_loginname') || 'Student';
+  var initial = uname.charAt(0).toUpperCase() || 'S';
   var page = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Windows</title>' +
     '<style>' +
     'body{margin:0;height:100vh;overflow:hidden;font-family:"Segoe UI",system-ui,Arial,sans-serif;color:#fff;' +
@@ -636,7 +648,7 @@ function openWindowsTab() {
     '</style></head><body>' +
     '<div class="blob b1"></div><div class="blob b2"></div>' +
     '<div class="clock"><div class="t" id="t">--:--</div><div class="d" id="d"></div></div>' +
-    '<div class="user"><div class="ava">S</div><div class="u">Student</div>' +
+    '<div class="user"><div class="ava">' + initial + '</div><div class="u">' + uname + '</div>' +
     '<div class="pw"><input type="password" id="p" placeholder="Password" onkeydown="if(event.key===\'Enter\')signIn()"><button class="go" onclick="signIn()">&#10148;</button></div></div>' +
     '<div id="msg">Welcome</div>' +
     '<script>' +
@@ -655,9 +667,12 @@ function resetPrefs() {
   localStorage.removeItem('lapeace_theme');
   localStorage.removeItem('lapeace_bg');
   localStorage.removeItem('lapeace_cloak');
+  localStorage.removeItem('lapeace_loginname');
   applyTheme('dark');
   setBackground('image', null);
-  restoreSite();
+  restoreVisual();
+  var ln = document.getElementById('login-name');
+  if (ln) ln.value = 'Student';
 }
 
 function showSec(id) {
@@ -688,7 +703,12 @@ function onSearch(q) {
 
 applyTheme(localStorage.getItem('lapeace_theme') || 'dark');
 setBackground(localStorage.getItem('lapeace_bg') || 'image', null);
-if (localStorage.getItem('lapeace_cloak') === 'canvas') cloakAsCanvas();
+if (localStorage.getItem('lapeace_cloak') !== 'off') cloakAsCanvas();
+var lnSaved = localStorage.getItem('lapeace_loginname');
+if (lnSaved) {
+  var lnInput = document.getElementById('login-name');
+  if (lnInput) lnInput.value = lnSaved;
+}
 </script>
 </body>
 </html>
